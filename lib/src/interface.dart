@@ -6,35 +6,56 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 typedef SharedPreferencesFactory = Future<SharedPreferences> Function();
 
-enum StorageType {
+enum XKeyValueType {
   session,
   secure,
   local,
 }
 
-abstract class StorageInterface {
+abstract class XKeyValueInterface {
   @protected
   final FlutterSecureStorage flutterSecureStorage;
 
   @protected
   final SharedPreferencesFactory sharedPreferencesFactory;
 
-  StorageInterface(this.flutterSecureStorage, this.sharedPreferencesFactory);
+  XKeyValueInterface(this.flutterSecureStorage, this.sharedPreferencesFactory);
 
   Future<void> write({
     required final String key,
     required final String value,
-    required final StorageType type,
+    required final XKeyValueType type,
   });
 
   Future<String> read({
     required final String key,
     final String defaultValue = '',
-    required final StorageType type,
+    required final XKeyValueType type,
   });
 
   Future<void> delete({
     required final String key,
-    required final StorageType type,
+    required final XKeyValueType type,
   });
+
+  @protected
+  Future<String> getFromSharedPreference(final String key,
+      {final String defaultValue = ''}) async {
+    final sharedPreferences = await sharedPreferencesFactory();
+    return sharedPreferences.getString(key) ?? defaultValue;
+  }
+
+  @protected
+  Future<String> removeFromSharedPreference(final String key,
+      {final String defaultValue = ''}) async {
+    final sharedPreferences = await sharedPreferencesFactory();
+    return sharedPreferences.getString(key) ?? defaultValue;
+  }
+
+  @protected
+  Future<void> writeFromSharedPreference(
+      final String key, final String value) async {
+    final sharedPreferences = await sharedPreferencesFactory();
+    sharedPreferences.setString(key, value);
+  }
 }

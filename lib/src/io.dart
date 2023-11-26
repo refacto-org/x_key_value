@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:x_key_value/src/interface.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class Storage extends StorageInterface {
-  Storage(FlutterSecureStorage flutterSecureStorage,
+class XKeyValue extends XKeyValueInterface {
+  XKeyValue(FlutterSecureStorage flutterSecureStorage,
       SharedPreferencesFactory sharedPreferencesFactory)
       : super(flutterSecureStorage, sharedPreferencesFactory);
 
@@ -12,41 +12,41 @@ class Storage extends StorageInterface {
   Future<void> write({
     required final String key,
     required final String value,
-    required final StorageType type,
+    required final XKeyValueType type,
   }) async {
-    if ([StorageType.secure, StorageType.session].contains(type)) {
-      await flutterSecureStorage.write(key: key, value: value);
-    } else if (type == StorageType.local) {
-      final sharedPreferences = await sharedPreferencesFactory();
-      await sharedPreferences.setString(key, value);
-    }
+    return switch (type) {
+      XKeyValueType.session ||
+      XKeyValueType.secure =>
+        await flutterSecureStorage.write(key: key, value: value),
+      XKeyValueType.local => await writeFromSharedPreference(key, value)
+    };
   }
 
   @override
   Future<String> read({
     required final String key,
     final String defaultValue = '',
-    required final StorageType type,
+    required final XKeyValueType type,
   }) async {
-    if ([StorageType.secure, StorageType.session].contains(type)) {
-      return (await flutterSecureStorage.read(key: key)) ?? defaultValue;
-    } else if (type == StorageType.local) {
-      final sharedPreferences = await sharedPreferencesFactory();
-      return sharedPreferences.getString(key) ?? defaultValue;
-    }
-    return defaultValue;
+    return switch (type) {
+      XKeyValueType.session ||
+      XKeyValueType.secure =>
+        (await flutterSecureStorage.read(key: key)) ?? defaultValue,
+      XKeyValueType.local =>
+        await getFromSharedPreference(key, defaultValue: defaultValue)
+    };
   }
 
   @override
   Future<void> delete({
     required final String key,
-    required final StorageType type,
+    required final XKeyValueType type,
   }) async {
-    if ([StorageType.secure, StorageType.session].contains(type)) {
-      await flutterSecureStorage.delete(key: key);
-    } else if (type == StorageType.local) {
-      final sharedPreferences = await sharedPreferencesFactory();
-      await sharedPreferences.remove(key);
-    }
+    return switch (type) {
+      XKeyValueType.session ||
+      XKeyValueType.secure =>
+        await flutterSecureStorage.delete(key: key),
+      XKeyValueType.local => await removeFromSharedPreference(key)
+    };
   }
 }

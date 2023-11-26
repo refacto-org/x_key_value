@@ -3,14 +3,9 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:x_key_value/src/type.dart';
 
 typedef SharedPreferencesFactory = Future<SharedPreferences> Function();
-
-enum XKeyValueType {
-  session,
-  secure,
-  local,
-}
 
 abstract class XKeyValueInterface {
   @protected

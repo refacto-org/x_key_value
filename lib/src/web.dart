@@ -3,6 +3,7 @@ import 'dart:html' show window;
 
 import 'package:x_key_value/src/interface.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:x_key_value/src/type.dart';
 
 class XKeyValue extends XKeyValueInterface {
   XKeyValue(FlutterSecureStorage flutterSecureStorage,

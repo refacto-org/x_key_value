@@ -34,10 +34,10 @@ class Storage extends StorageInterface {
     if (type == StorageType.session) {
       return window.sessionStorage[key] ?? defaultValue;
     } else if (type == StorageType.secure) {
-      await flutterSecureStorage.read(key: key);
+      return (await flutterSecureStorage.read(key: key)) ?? defaultValue;
     } else if (type == StorageType.local) {
       final sharedPreferences = await sharedPreferencesFactory();
-      sharedPreferences.getString(key);
+      return sharedPreferences.getString(key) ?? defaultValue;
     }
     return defaultValue;
   }

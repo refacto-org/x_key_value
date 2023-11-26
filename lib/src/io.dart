@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:x_key_value/src/factory.dart';
 import 'package:x_key_value/src/interface.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:x_key_value/src/type.dart';
